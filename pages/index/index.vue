@@ -205,6 +205,7 @@
        */
       selecePicker() {
         var formInfoData = this.formInfo.data;
+        var data = [iosProvinces, iosCitys, iosCountys]
         this.$IosSelect(3, [iosProvinces, iosCitys, iosCountys], {
           title: "地址选择", //标题
           itemHeight: 35, //每一个元素的高度

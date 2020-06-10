@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+
+<script>
+    import axios from 'axios';
+    const caches = {};
+    const axiosRequester = () => {
+        let cancel;
+        return async url => {
+            if (cancel) {
+                cancel.cancel();
+            }
+            cancel = axios.CancelToken.source();
+            try {
+                if (caches[url]) { //如果请求的 url 之前已经提交过，就不在进行请求，返回之前请求回来的数据
+                    return caches[url];
+                }
+                const res = await axios.post(url, {
+                    cancelToken: cancel.token
+                })
+                const result = res.data.result;
+                caches[url] = result; //将 url作为 key, result 为请求回来的数据，存储起来
+                return result;
+            } catch (error) {
+                if (axios.isCancel(error)) {
+                    console.log('Request canceled', error.message);
+                } else {
+                    console.log(error.message);
+                }
+            }
+        }
+    }
+
+    export const _search = axiosRequester();
+</script>
+
+</html>

@@ -1,3 +1,5 @@
+## picker
+
 ### 特点 
 
 * 0依赖，只需引用一个js和css即可
@@ -184,23 +186,23 @@ options.callback(selectOneObj, selectTwoObj, selectThreeObj, selectFourObj, sele
 [oneTwoRelation, twoThreeRelation, threeFourRelation, fourFiveRelation, fiveSixRelation]
 可选项。如果数据是数组(非方法)，各级选项之间通过parentId关联时，需要设置；如果是通过方法获取数据，不需要该参数。
 
-* oneTwoRelation 
+* options.relation.oneTwoRelation 
 
-        第一列和第二列是否通过parentId关联，可选项
+    第一列和第二列是否通过parentId关联，可选项
 
-* twoThreeRelation 
+* options.relation.twoThreeRelation 
 
-        第二列和第三列是否通过parentId关联，可选项
+    第二列和第三列是否通过parentId关联，可选项
 
-* threeFourRelation 
+* options.relation.threeFourRelation 
 
-        第三列和第四列是否通过parentId关联，可选项
+    第三列和第四列是否通过parentId关联，可选项
 
-* fourFiveRelation 
+* options.relation.fourFiveRelation 
 
-        第四列和第五列是否通过parentId关联，可选项
+    第四列和第五列是否通过parentId关联，可选项
 
-* fiveSixRelation 
+* options.relation.fiveSixRelation 
 
     第五列和第六列是否通过parentId关联，可选项
 

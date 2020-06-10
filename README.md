@@ -186,23 +186,23 @@ options.callback(selectOneObj, selectTwoObj, selectThreeObj, selectFourObj, sele
 
 * oneTwoRelation 
 
-第一列和第二列是否通过parentId关联，可选项
+        第一列和第二列是否通过parentId关联，可选项
 
 * twoThreeRelation 
 
-第二列和第三列是否通过parentId关联，可选项
+        第二列和第三列是否通过parentId关联，可选项
 
 * threeFourRelation 
 
-第三列和第四列是否通过parentId关联，可选项
+        第三列和第四列是否通过parentId关联，可选项
 
 * fourFiveRelation 
 
-第四列和第五列是否通过parentId关联，可选项
+        第四列和第五列是否通过parentId关联，可选项
 
 * fiveSixRelation 
 
-第五列和第六列是否通过parentId关联，可选项
+    第五列和第六列是否通过parentId关联，可选项
 
 #### options.oneLevelId
 

@@ -2,17 +2,23 @@
 
 ### 特点
 
-* 其包含功能有，表单验证（非空，正则）、picker（单列及其多列选择）、image上传
+* 其包含功能有，表单验证（非空，正则）、picker（单列及其多列选择）
+* 表单有input、textarea以及单选(radio)，插槽
 * 表单验证
-    * 大撒大撒
-
-
+    * 与element的表单验证基本一致
+    * 引入PageForm.vue组件，initRules.js初始化文件即可
+    * label位置可选left何top
+    * 支持表单全部验证，或指定某项验证
+* Picker
+    * 0依赖，只需引用一个js和css即可
+    * 样式可自己定制，也可使用默认样式
+    * 一个页面同时实例化多个组件
+    * jquery zepto angular vue react均适用
+    * 支持最多6级级联
+    * 支持设置高度和高度单位
+    * 适用于android和iOS设备(PC端支持IE9+，不过PC端上滑动体验不太实用)
 
 ## Validator
-
-## 特点
-
-* 
 
 ### 起步
 
@@ -22,18 +28,78 @@
 npm install async-validator --save
 ```
 
+* 实例
+
+``` javascript
+formInfo: {
+    data: {
+        name: '',
+        sex: '',
+        age: ''
+    },
+    fieldList: [
+        { label: '姓名', value: 'name', type: 'input'},
+        { label: '性别', value: 'sex', type: 'radio'},
+        { label: '年龄', value: 'age', type: 'input'},
+    ],
+    rules: {}
+}
+```
+
+### 参数说明
+
+#### formData
+
+        type: Object
+
+表单数据
+
+#### fieldList
+
+        type: Array
+
+相关字段
+
+#### rules
+
+        type: Object
+
+验证规则
+
+#### listTypeInfo
+
+        type: Object
+
+相关列表
+        
+### 方法说明
+
+#### initRules
+
+    const formInfo = this.formInfo;
+    formInfo.rules = this.$initRules(formInfo.fieldList);
+
+初始化正则
+
+#### validate
+
+    this.$refs.form.validate(res => {})
+
+验证整个表单
+
+#### validateField
+
+    this.$refs.form.validateField('name', res => {})
+
+验证指定项
+
+#### resetFields
+
+    this.$refs.form.resetFields()
+
+初始化表单
+
 ## Picker
-
-### 特点 
-
-* 0依赖，只需引用一个js和css即可
-* 样式可自己定制，也可使用默认样式
-* 一个页面同时实例化多个组件
-* jquery zepto angular vue react均适用
-* 支持最多6级级联
-* 支持设置高度和高度单位
-* 适用于android和iOS设备(PC端支持IE9+，不过PC端上滑动体验不太实用)
-
 
 ### 起步 
 

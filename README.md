@@ -1,4 +1,28 @@
-## picker
+# 表单验证
+
+### 特点
+
+* 其包含功能有，表单验证（非空，正则）、picker（单列及其多列选择）、image上传
+* 表单验证
+* * 大撒大撒
+
+
+
+## Validator
+
+## 特点
+
+* 
+
+### 起步
+
+* npm 
+
+```javascript
+npm install async-validator --save
+```
+
+## Picker
 
 ### 特点 
 
@@ -78,14 +102,6 @@ var iosCitys = [
 ```
 
 在方法里可以根据前序列的选中值定义需要的数据，比如年月日，当年月变化时，可根据年月选中值，设置日期的取值范围。
-
-具体可参考demo中的日期选择器和日期时间选择器。
-点击查看demo：
-http://zhoushengfe.com/iosselect/demo/datepicker/date.html
-
-如何ajax获取数据
-
-![image](http://zhoushengfe.com/img/ajax.jpg)
 
 #### options
 

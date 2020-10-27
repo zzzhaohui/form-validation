@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>吸取图片颜色</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            padding: 20px;
+            display: flex;
+        }
+
+        .left {
+            border: #eeeeee 1px solid;
+            padding: 20px;
+        }
+
+        .url {
+            line-height: 30px;
+        }
+
+        .getUrl {
+            width: 400px;
+        }
+
+        .right {
+            margin-left: 20px;
+            width: 100%;
+            border: #eeeeee 1px solid;
+            padding: 20px;
+            position: relative;
+        }
+
+        .btn {
+            line-height: 48px;
+            margin-bottom: 10px;
+        }
+
+        .file {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="left">
+            <div class="url">
+                <div>输入图片地址:
+                    https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2468497856,1121361906&fm=26&gp=0.jpg</div>
+                <input type="text" value="" class="getUrl">
+                <button class="submit">确定地址</button>
+            </div>
+            <div>
+                <canvas id="canvas"></canvas>
+            </div>
+            <div class="test">获取到img出现最多的颜色，赋予背景色</div>
+        </div>
+        <div class="right">
+            <div class="btn">
+                <input type="file" accept="" name="" class="file" id="">
+                <button class="">选择需要上传的图片</button>
+                <div class="bagColor">获取到img出现最多的颜色，赋予背景色</div>
+            </div>
+            <div class="win">
+                <canvas class="canvas"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+
+    var getUrl = document.querySelector('.getUrl')
+    var submit = document.querySelector('.submit')
+
+    onLoad()
+
+    submit.addEventListener('click', function () {
+        onLoad()
+    })
+
+    function onLoad() {
+        var image = new Image()
+
+        image.src = getUrl.value || "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1716737588,2183221507&fm=26&gp=0.jpg"
+        image.crossOrigin = "anonymous"
+
+        image.onload = function () {
+            var canvas = document.getElementById('canvas');
+            var testBag = document.querySelector('.test')
+
+            var maxVal = getRgba(canvas, this)
+
+            var splitArr = maxVal.split(",")
+            var hex = getHex(Number(splitArr[0]), Number(splitArr[1]), Number(splitArr[2]))
+
+            testBag.style.backgroundColor = '#' + hex
+        }
+    }
+
+
+
+
+    var oFile = document.querySelector('.file')
+    var bagColor = document.querySelector('.bagColor')
+    var canvasss = document.querySelector('.canvas')
+
+    oFile.addEventListener("change", function (e) {
+        var img = e.target.files[0];
+
+        //检查能否读取图片
+        if (!img) return
+
+        // 检查图片类型 
+        if (!(img.type.indexOf('image') == 0 && img.type && /\.(?:jpg|png|gif)$/.test(img.name))) return alert('图片只能是jpg,gif,png');
+
+        // 限制图片大小 
+        if (img.size > 500 * 1024) return alert('图片不能大于500K')
+
+        var images = new Image()
+
+        //获取图片地址
+        images.src = window.URL.createObjectURL(img)
+
+        images.onload = function () {
+            var maxVal = getRgba(canvasss, this)
+
+            var splitArr = maxVal.split(",")
+            var hex = getHex(Number(splitArr[0]), Number(splitArr[1]), Number(splitArr[2]))
+
+            bagColor.style.backgroundColor = '#' + hex
+        }
+
+    })
+
+
+
+    //获取
+    function getRgba(canvas, that) {
+
+        var imgWidth = that.width
+        var imgHeight = that.height
+
+        //给canvas赋宽高
+        canvas.width = imgWidth
+        canvas.height = imgHeight
+
+        var context = canvas.getContext('2d');
+
+        // 将图片按像素写入画布 
+        context.drawImage(that, 0, 0, imgWidth, imgHeight)
+
+        //读取图片像素信息
+        var imgdatas = context.getImageData(0, 0, imgWidth, imgHeight);
+
+        //获取rgba数据
+        var imgdata = imgdatas.data;
+
+        var newJson = {},
+            length = imgdata.length;
+
+        for (let i = 0; i < length; i++) {
+
+            if (i % 4 === 0) { // 每四个元素为一个像素数据 r,g,b,alpha 
+
+                var alpha = Math.round(imgdata[i + 3] / 255 * 100) / 100; // alpha 值
+
+                var rgba = imgdata[i] + ',' + imgdata[i + 1] + ',' + imgdata[i + 2] + ',' + alpha;
+
+                if (!newJson[rgba]) {
+                    newJson[rgba] = 1
+                } else {
+                    newJson[rgba]++
+                }
+            }
+        }
+
+        //取出现最多的rgba
+        var maxNum = 0,
+            maxVal = "";
+        for (let key in newJson) {
+            if (newJson[key] > maxNum) {
+                maxNum = newJson[key];
+                maxVal = key;
+            }
+        }
+        console.log('rgba:', maxVal + "; 次数:" + maxNum)
+        return maxVal
+    }
+
+    // 获取16进制颜色 
+    function getHex(...value) {
+
+        r = value[0].toString(16);
+        g = value[1].toString(16);
+        b = value[2].toString(16);
+
+        // 补0 
+        r.length == 1 ? r = '0' + r : '';
+        g.length == 1 ? g = '0' + g : '';
+        b.length == 1 ? b = '0' + b : '';
+
+        var hex = r + g + b;
+
+        // 简化处理,如 FFEEDD 可以写为 FED 
+        if (r.slice(0, 1) == r.slice(1, 1) && g.slice(0, 1) == g.slice(1, 1) && b.slice(0, 1) == b.slice(1, 1)) {
+            hex = r.slice(0, 1) + g.slice(0, 1) + b.slice(0, 1);
+        }
+
+        return hex;
+    }
+
+
+</script>
+
+</html>

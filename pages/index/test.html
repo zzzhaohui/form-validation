@@ -5,43 +5,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid red;
+        }
+
+        .list {
+            /* line-height: 48px; */
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .label {
+            line-height: 48px;
+        }
+
+        .right {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top {
+            margin-right: 10px;
+            color: red;
+        }
+
+        .bottom {
+            color: green;
+        }
+
+        .top,
+        .bottom {
+            padding: 4px 16px;
+            background: #aaaaaa;
+            border-radius: 5px;
+        }
+
+        .top:hover {
+            cursor: pointer;
+            background: #2525b9;
+        }
+
+        .bottom:hover {
+            cursor: pointer;
+            background: #2525b9;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="box">
+        <!-- <div class="list">
+            <div class="label">label</div>
+            <div class="right">
+                <div class="top">向上</div>
+                <div class="bottom">向下</div>
+            </div>
+        </div> -->
+        <!-- <div class="list">
+            <div class="label">label</div>
+            <div class="right">
+                <div class="top">向上</div>
+                <div class="bottom">向下</div>
+            </div>
+        </div>
+        <div class="list">
+            <div class="label">label</div>
+            <div class="right">
+                <div class="top">向上</div>
+                <div class="bottom">向下</div>
+            </div>
+        </div>
+        <div class="list">
+            <div class="label">label</div>
+            <div class="right">
+                <div class="top">向上</div>
+                <div class="bottom">向下</div>
+            </div>
+        </div>
+        <div class="list">
+            <div class="label">label</div>
+            <div class="right">
+                <div class="top">向上</div>
+                <div class="bottom">向下</div>
+            </div>
+        </div>
+        <div class="list">
+            <div class="label">label</div>
+            <div class="right">
+                <div class="top">向上</div>
+                <div class="bottom">向下</div>
+            </div>
+        </div> -->
+
+    </div>
 
 </body>
 
+<script src="./jquery-3.4.0.js"></script>
 <script>
-    import axios from 'axios';
-    const caches = {};
-    const axiosRequester = () => {
-        let cancel;
-        return async url => {
-            if (cancel) {
-                cancel.cancel();
-            }
-            cancel = axios.CancelToken.source();
-            try {
-                if (caches[url]) { //如果请求的 url 之前已经提交过，就不在进行请求，返回之前请求回来的数据
-                    return caches[url];
-                }
-                const res = await axios.post(url, {
-                    cancelToken: cancel.token
-                })
-                const result = res.data.result;
-                caches[url] = result; //将 url作为 key, result 为请求回来的数据，存储起来
-                return result;
-            } catch (error) {
-                if (axios.isCancel(error)) {
-                    console.log('Request canceled', error.message);
-                } else {
-                    console.log(error.message);
-                }
-            }
+    const oBox = document.querySelector(".box")
+    // var oList= document.querySelector(".list")
+
+    function structure(...value) {
+        return {
+            label: value[0] + "+" + value[1],
+            id: value[1],
         }
     }
 
-    export const _search = axiosRequester();
+    const newArr = []
+
+    function initHtml() {
+        newArr.forEach((item, index) => {
+            var oList = document.createElement('div')
+            oList.className = 'list'
+            oList.setAttribute("data-list", index)
+
+            oList.innerHTML = `
+            <div class="label">${item.label}</div>
+            <div class="right">
+                <div class="top" data-btn="${index}">向上</div>
+                <div class="bottom" data-btn="${index}">向下</div>
+            </div>
+        `
+            oBox.appendChild(oList)
+        })
+    }
+
+    function clickBtn() {
+        var oBtnTop = document.querySelectorAll('.top')
+        var oBtnBottom = document.querySelectorAll('.bottom')
+
+        for (let i = 0; i < oBtnTop.length; i++) {
+            // 向上
+            oBtnTop[i].addEventListener("click", function () {
+
+                var dataBtnValue = oBtnTop[i].getAttribute('data-btn')
+
+                if (Number(dataBtnValue) > 0) {
+                    var newItems = newArr[dataBtnValue] //储存 当前值
+
+                    // newArr[dataBtnValue] = newArr[dataBtnValue - 1] //前值变后值
+                    // newArr[dataBtnValue - 1] = newItems //后值变前值
+
+                    newArr.splice(dataBtnValue - 1, 1, ...newArr.splice(dataBtnValue, 1, newArr[dataBtnValue - 1]));
+
+                    oBox.innerHTML = ''
+                    initHtml()
+                } else {
+                    oBox.innerHTML = ''
+                    initHtml()
+                    alert("已经到顶了！")
+                }
+                clickBtn()
+            })
+
+            //向下
+            oBtnBottom[i].addEventListener("click", function () {
+                var dataBtnValue = oBtnBottom[i].getAttribute('data-btn')
+
+                if (Number(dataBtnValue) < oBtnBottom.length - 1) {
+                    var newItems = newArr[dataBtnValue] //储存 当前值
+
+                    newArr[dataBtnValue] = newArr[Number(dataBtnValue) + 1] //
+                    newArr[Number(dataBtnValue) + 1] = newItems //
+
+                    oBox.innerHTML = ''
+                    initHtml()
+                } else {
+                    oBox.innerHTML = ''
+                    initHtml()
+                    alert("已经到底了！")
+                }
+                clickBtn()
+            })
+
+        }
+    }
+
+
+
+
+    window.onload = function () {
+        for (let i = 0; i < 7; i++) {
+            newArr.push(structure('label', i))
+        }
+        initHtml()
+        clickBtn()
+    }
+    
+
+
+
 </script>
 
 </html>

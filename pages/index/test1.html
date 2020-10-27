@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原生js实现，动态排列</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            padding: 20px 60px;
+            display: flex;
+
+        }
+
+        .box2 {
+            padding: 20px 60px;
+        }
+
+        .labler {
+            display: flex;
+            align-items: center;
+        }
+
+        .content {
+            position: relative;
+            top: 0;
+            left: 0;
+        }
+
+        .circular {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            border: 1px solid black;
+            margin: 0 2px;
+        }
+
+        .border {
+            width: 100px;
+            height: 2px;
+            background: black;
+        }
+
+        .title {
+            position: absolute;
+            left: -30px;
+            top: 10px;
+            /* 不换行 */
+            white-space: nowrap;
+        }
+
+        .active {
+            color: rgb(143, 186, 235);
+            background: rgb(143, 186, 235);
+            border: rgb(143, 186, 235) 1px solid
+        }
+
+        .active-title {
+            color: rgb(143, 186, 235);
+        }
+
+        .posi {
+            display: flex;
+        }
+
+        .right {
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+
+    </div>
+    <div class="box2">
+        <button class="btn">点击下一步</button>
+    </div>
+    <div class="posi">
+        <div class="left">左边</div>
+        <div class="right">右边</div>
+    </div>
+</body>
+<script>
+    var oBox = document.querySelector(".box")
+    var oBtn = document.querySelector(".btn")
+
+    var newArr = [
+        { name: "文字1", active: true },
+        { name: "文字2", active: true },
+        { name: "文字3", active: true },
+        { name: "文字4", active: false },
+        { name: "文字5", active: false },
+    ]
+
+    var clickArr = []
+
+    function createDiv() {
+        newArr.forEach((item, index, arr) => {
+            var labler = document.createElement('div')
+            labler.className = "labler"
+
+            if (index === 0) {
+                labler.innerHTML = `
+                <div class="circular active" data-cir="${index}"></div>
+                <div class="content">
+                    <div class="title active-title">
+                        ${item.name}
+                    </div>
+                </div>
+                `
+            } else if (index === arr.length - 1) {
+                labler.innerHTML = `
+                <div class="border" data-bor="${index}"></div>
+                <div class="content">
+                    <div class="title">
+                        ${item.name}
+                    </div>
+                </div>
+                <div class="circular" data-cir="${index}"></div>
+                `
+            } else {
+                labler.innerHTML = `
+                <div class="border" data-bor="${index}"></div>
+                <div class="circular"></div>
+                <div class="content" data-cir="${index}">
+                    <div class="title">
+                        ${item.name}
+                    </div>
+                </div>
+                `
+            }
+            oBox.appendChild(labler)
+
+        })
+    }
+
+    function speedClick() {
+
+        newArr.forEach((item, index) => {
+            var oCircular = document.querySelectorAll('.circular')
+            var oBorder = document.querySelectorAll('.border')
+            var oTitle = document.querySelectorAll('.title')
+
+            if (item.active) {
+                clickArr.push(index)
+                if (index > 0) {
+                    oBorder[index - 1].classList.add('active')
+                }
+
+                oCircular[index].classList.add('active')
+                oTitle[index].classList.add('active-title')
+
+            }
+        })
+    }
+
+    function click() {
+        var clickID = 0
+
+        oBtn.addEventListener("click", function () {
+            var oCircular = document.querySelectorAll('.circular')
+            var oBorder = document.querySelectorAll('.border')
+            var oTitle = document.querySelectorAll('.title')
+
+            clickArr.forEach((item, index) => {
+
+                if (index === oCircular.length - 1 || index > oCircular.length - 1) return ''
+                oCircular[index + 1].classList.add('active')
+                oBorder[index].classList.add('active')
+                oTitle[index + 1].classList.add('active-title')
+            })
+
+            clickID += 1
+            clickArr.push(clickID)
+
+        })
+    }
+
+    window.onload = function () {
+        createDiv()
+        speedClick()
+        click()
+    }
+
+
+</script>
+
+</html>
